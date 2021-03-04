@@ -92,17 +92,19 @@ router.route('/movies')
             movie.genre = req.body.genre;
             movie.actors = req.body.actors;
 
-            movie.save(function(err) {
-                if (err) {
-                    if (err.code === 11000) {
-                        return res.json({success: false, message: "That movie already exists."});
+            res.json({success: false, message: 'Hello'});
 
-                    } else {
-                        return res.send(err);
-                    }
-                }
-                res.status(200).send({success: true, msg: 'Successfully created new movie.'});
-            });
+            // movie.save(function(err) {
+            //     if (err) {
+            //         if (err.code === 11000) {
+            //             return res.json({success: false, message: "That movie already exists."});
+            //
+            //         } else {
+            //             return res.send(err);
+            //         }
+            //     }
+            //     res.status(200).send({success: true, msg: 'Successfully created new movie.'});
+            // });
         }
     })
     .put(authJwtController.isAuthenticated, function(req, res) {
@@ -160,6 +162,6 @@ router.all('/', function (req, res) {
 
 app.use('/', router);
 app.listen(process.env.PORT || 8080);
-// module.exports = app; // for testing only
+module.exports = app; // for testing only
 
 
