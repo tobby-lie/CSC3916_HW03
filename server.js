@@ -104,7 +104,7 @@ router.route('/movies')
                         return res.send(err);
                     }
                 }
-                res.json({ success: true, msg: 'Successfully created new user.' });
+                res.json({ success: true, msg: 'Successfully created new movie.' });
             });
         }
     })
@@ -140,14 +140,22 @@ router.route('/movies')
         }
     })
     .get(authJwtController.isAuthenticated, function (req, res) {
-        if (!req.body) {
-            return res.json({ success: false, message: "Please provide a movie to be retrieved." });
+        if (!req.body.find_title) {
+            return res.json({ success: false, message: "Please provide a title to be retrieved." });
         } else {
-            Movie.findOne(req.body).select("title year_released genre actors").exec(function (err, movie) {
+            Movie.findOne(req.body.find_title).select("title year_released genre actors").exec(function (err, movie) {
                 if (err) {
-                    return res.json(err);
+                    return res.status(403).json({success: false, message: "Unable to retrieve title passed in."});
+                } else {
+                    return res.status(200).json({success: true, message: "Successfully retrieved title.", movie: movie});
                 }
-                return res.json({ success: true, message: "Successfully found movie.", movie: json(movie) });
+
+                // if (movie && movie.length > 0) {
+                //     return res.status(200).json({success: true, message: "Successfully retrieved movie.", movie: movie});
+                // } else {
+                //     return res.status(404).json({success: false, message: "Unable to retrieve title passed in."});
+                // }
+                // return res.json({ success: true, message: "Successfully found movie.", movie: json(movie) });
             })
         }
     });
