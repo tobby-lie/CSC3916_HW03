@@ -110,15 +110,13 @@ router.route('/movies')
     })
     .put(authJwtController.isAuthenticated, function (req, res) {
         if (!req.body.find_title || !req.body.update_title) {
-            return res.json({ success: false, message: "Please provide a movie to be updated as well as the new data to update that movie." });
+            return res.json({ success: false, message: "Please provide a title to be updated as well as the new title to update." });
         } else {
             Movie.updateOne( req.body.find_title, req.body.update_title, function (err, movie) {
                 if (err) {
-                    return res.status(403).json({success: false, message: "Unable to update movie passed in."});
-                } else if (movie.n === 0) {
-                    return res.status(403).json({success: false, message: "Unable to find this movie to update."});
+                    return res.status(403).json({success: false, message: "Unable to update title passed in."});
                 } else {
-                    return res.status(200).json({success: true, message: "Successfully updated movie."});
+                    return res.status(200).json({success: true, message: "Successfully updated title."});
                 }
             });
         }
@@ -127,12 +125,12 @@ router.route('/movies')
         if (!req.body.find_title) {
             return res.json({ success: false, message: "Please provide a title to delete." });
         } else {
-            Movie.deleteOne({title: req.body.find_title}, function (err, res) {
+            Movie.deleteOne( req.body.find_title, function (err, movie) {
                 if (err) {
-                    return res.status(403).json({success: false, message: "Unable to delete movie passed in."});
+                    return res.status(403).json({success: false, message: "Unable to delete title passed in."});
                 }
                 else {
-                    return res.status(200).json({success: true, message: "Successfully deleted movie."});
+                    return res.status(200).json({success: true, message: "Successfully deleted title."});
                 }
             });
         }
