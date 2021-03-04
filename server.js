@@ -87,7 +87,7 @@ router.post('/signin', function (req, res) {
 router.route('/movies')
     .post(authJwtController.isAuthenticated, function (req, res) {
         if (!req.body.title || !req.body.year_released || !req.body.genre || !req.body.actors[0] || !req.body.actors[1] || !req.body.actors[2]) {
-            res.json({ success: false, message: 'Please include all information for title, year released, genre, and actors.' });
+            res.json({ success: false, message: 'Please include all information for title, year released, genre, and 3 actors.'});
         } else {
             var movie = new Movie();
 
@@ -100,12 +100,11 @@ router.route('/movies')
                 if (err) {
                     if (err.code === 11000) {
                         return res.json({ success: false, message: "That movie already exists." });
-
                     } else {
                         return res.send(err);
                     }
                 }
-                res.status(200).send({ success: true, msg: 'Successfully created new movie.' });
+                res.json({ success: true, msg: 'Successfully created new user.' });
             });
         }
     })
@@ -113,16 +112,20 @@ router.route('/movies')
         if (!req.body.update_title || !req.body.update_data) {
             return res.json({ success: false, message: "Please provide a title to be updated as well as the new data to update that title." });
         } else {
-            Movie.findOne({ title: req.body.update_title }, function (err, res) {
+            Movie.findOne({ title: req.body.update_title }, function (err, result) {
                 if (err) {
-                    return res.json(err);
+                    return res.send(err);
                 } else {
-                    Movie.updateOne({ title: req.body.update_title }, update_data, function (err, res) {
-                        if (err) {
-                            return res.json(err);
-                        }
-                        return res.json({ success: true, message: "Successfully updated movie." });
-                    })
+                    if (result == null) {
+                        res.send("No title matches the one that was passed in.");
+                    } else {
+                        Movie.updateOne({ title: req.body.update_title }, update_data, function (err, doc) {
+                            if (err) {
+                                res.send(err);
+                            }
+                            return res.json({ success: true, message: "Successfully updated movie." });
+                        });
+                    }
                 }
             })
         }
