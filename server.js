@@ -112,22 +112,13 @@ router.route('/movies')
         if (!req.body.find_movie || !req.body.update_data) {
             return res.json({ success: false, message: "Please provide a movie to be updated as well as the new data to update that movie." });
         } else {
-            Movie.findOne( {title: req.body.find_movie.title}, function (err, result) {
-                if (err) {
-                    return res.send(err);
-                } else {
-                    if (result == null) {
-                        res.send("No movie matches the one that was passed in.");
+                Movie.updateOne( req.body.find_movie, req.body.update_data, function (err, doc) {
+                    if (err) {
+                        return res.status(403).json({success: false, message: "Unable to update movie passed in."});
                     } else {
-                        Movie.updateOne( {title: req.body.find_movie.title}, req.body.update_data, function (err, doc) {
-                            if (err) {
-                                res.send(err);
-                            }
-                            return res.json({ success: true, message: "Successfully updated movie." });
-                        });
+                        return res.status(200).json({success: true, message: "Successfully updated movie."});
                     }
-                }
-            })
+                });
         }
     })
     .delete(authJwtController.isAuthenticated, function (req, res) {
