@@ -112,31 +112,27 @@ router.route('/movies')
         if (!req.body.find_title || !req.body.update_data) {
             return res.json({ success: false, message: "Please provide a title to be updated as well as the new data to update that movie." });
         } else {
-                Movie.updateOne( {title: req.body.find_title}, req.body.update_data, function (err, doc) {
-                    if (err) {
-                        return res.status(403).json({success: false, message: "Unable to update movie passed in."});
-                    } else {
-                        return res.status(200).json({success: true, message: "Successfully updated movie."});
-                    }
-                });
+            Movie.updateOne( {title: req.body.find_title}, req.body.update_data, function (err, doc) {
+                if (err) {
+                    return res.status(403).json({success: false, message: "Unable to update movie passed in."});
+                } else {
+                    return res.status(200).json({success: true, message: "Successfully updated movie."});
+                }
+            });
         }
     })
     .delete(authJwtController.isAuthenticated, function (req, res) {
-        if (!req.body) {
-            return res.json({ success: false, message: "Please provide a movie to delete." });
+        if (!req.body.find_title) {
+            return res.json({ success: false, message: "Please provide a title to delete." });
         } else {
-            Movie.findOne(req.body, function (err, res) {
+            Movie.deleteOne({title: req.body.find_title}, function (err, res) {
                 if (err) {
-                    return res.json(err);
-                } else {
-                    Movie.deleteOne(req.body, function (err, res) {
-                        if (err) {
-                            return res.json(err);
-                        }
-                        res.json({ success: true, msg: 'Successfully deleted movie.' });
-                    })
+                    return res.status(403).json({success: false, message: "Unable to delete movie passed in."});
                 }
-            })
+                else {
+                    return res.status(200).json({success: true, message: "Successfully deleted movie."});
+                }
+            });
         }
     })
     .get(authJwtController.isAuthenticated, function (req, res) {
