@@ -5,7 +5,8 @@ var authController = require('./auth');
 var authJwtController = require('./auth_jwt');
 var jwt = require('jsonwebtoken');
 var cors = require('cors');
-var User = require('./Users')
+var User = require('./Users');
+var Movie = require('./Movies');
 
 var app = express();
 app.use(cors());
@@ -78,6 +79,29 @@ router.post('/signin', function (req, res) {
         })
     })
 });
+
+router.post('/movies', function (req, res) {
+    if (!req.body.title || !req.body.year || !req.body.genre || !req.body.actors) {
+        res.json({success: false, msg: 'Please include a title, year released, genre, and three actors that were in the film.'});
+    } else {
+        var movie = new Movie();
+        movie.title = req.body.title;
+        movie.year = req.body.year;
+        movie.genre = req.body.genre;
+        if (req.body.actors.length !== 3) {
+            res.json({success: false, msg: 'Please include three actors that were in the film.'});
+        }
+        movie.actors = req.body.actors;
+
+        movie.save(function(err){
+            if (err) {
+                    return res.json(err);
+            }
+
+            res.json({success: true, msg: 'Successfully created new movie.'});
+        });
+    }
+})
 
 app.use('/', router);
 app.listen(process.env.PORT || 8080);
