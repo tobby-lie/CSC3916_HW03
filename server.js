@@ -109,10 +109,10 @@ router.route('/movies')
         }
     })
     .put(authJwtController.isAuthenticated, function (req, res) {
-        if (!req.body.find_title || !req.body.update_title) {
+        if (!req.body.find_title || !req.body.update_data) {
             return res.json({ success: false, message: "Please provide a movie to be updated as well as the new data to update that movie." });
         } else {
-            Movie.updateMany( {title: req.body.find_title}, {title: req.body.update_title}, function (err, movie) {
+            Movie.updateMany( {title: req.body.find_title}, {title: req.body.update_data}, function (err, movie) {
                 if (err) {
                     return res.status(403).json({success: false, message: "Unable to update movie passed in."});
                 } else {
