@@ -109,17 +109,17 @@ router.route('/movies')
         }
     })
     .put(authJwtController.isAuthenticated, function (req, res) {
-        if (!req.body.update_title || !req.body.update_data) {
-            return res.json({ success: false, message: "Please provide a title to be updated as well as the new data to update that title." });
+        if (!req.body.find_movie || !req.body.update_data) {
+            return res.json({ success: false, message: "Please provide a movie to be updated as well as the new data to update that movie." });
         } else {
-            Movie.findOne({ title: req.body.update_title }, function (err, result) {
+            Movie.findOne( req.body.find_movie, function (err, result) {
                 if (err) {
                     return res.send(err);
                 } else {
                     if (result == null) {
-                        res.send("No title matches the one that was passed in.");
+                        res.send("No movie matches the one that was passed in.");
                     } else {
-                        Movie.updateOne({ title: req.body.update_title }, update_data, function (err, doc) {
+                        Movie.updateOne( req.body.find_movie, req.body.update_data, function (err, doc) {
                             if (err) {
                                 res.send(err);
                             }
