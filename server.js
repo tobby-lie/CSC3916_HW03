@@ -82,7 +82,7 @@ router.post('/signin', function (req, res) {
 
 router.route('/movies')
     .post(authJwtController.isAuthenticated, function(req, res) {
-        if(!req.body.title || !req.body.year_released || !req.body.genre || !req.body.actors) {//!req.body.actors[0] || !req.body.actors[1] || !req.body.actors[2]) {
+        if(!req.body.title || !req.body.year_released || !req.body.genre || !req.body.actors[0] || !req.body.actors[1] || !req.body.actors[2]) {
             res.json({success: false, message: 'Please include all information for title, year released, genre, and actors.'});
         } else {
             var movie = new Movie();
