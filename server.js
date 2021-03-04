@@ -83,7 +83,7 @@ router.post('/signin', function (req, res) {
 router.route('/movies')
     .post(authJwtController.isAuthenticated, function(req, res) {
         if(!req.body.title || !req.body.year_released || !req.body.genre || !req.body.actors[0] || !req.body.actors[1] || !req.body.actors[2]) {
-            res.json({success: false, msg: 'Please include all information for title, year released, genre, and actors.'})
+            res.json({success: false, message: 'Please include all information for title, year released, genre, and actors.'});
         } else {
             var movie = new Movie();
 
@@ -95,14 +95,14 @@ router.route('/movies')
             movie.save(function(err) {
                 if (err) {
                     if (err.code === 11000)
-                        return res.json({success: false, message: "A movie with that title already exists."});
+                        return res.json({success: false, message: "That movie already exists."});
                     else
                         return res.json(err);
                 }
                 res.json({success: true, msg: 'Successfully created new movie.'});
             });
         }
-    })
+    });
     // .put(authJwtController.isAuthenticated, function(req, res) {
     //     if (!req.body.update_title || !req.body.update_data) {
     //         return res.json({success: false, message: "Please provide a title to be updated as well as the new data to update that title."});
@@ -151,6 +151,10 @@ router.route('/movies')
     //         })
     //     }
     // })
+
+router.all('/', function (req, res) {
+    res.json({success: false, msg: 'This route is not supported.'});
+});
 
 app.use('/', router);
 app.listen(process.env.PORT || 8080);
