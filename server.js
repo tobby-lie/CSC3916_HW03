@@ -82,7 +82,7 @@ router.post('/signin', function (req, res) {
 
 router.route('/movies')
     .post(authJwtController.isAuthenticated, function(req, res) {
-        if(!req.body.title || !req.body.year_released || !req.body.genre || !req.body.actors[0] || !req.body.actors[1] || !req.body.actors[2]) {
+        if(!req.body.title || !req.body.year_released || !req.body.genre || !req.body.actors) {//!req.body.actors[0] || !req.body.actors[1] || !req.body.actors[2]) {
             res.json({success: false, message: 'Please include all information for title, year released, genre, and actors.'});
         } else {
             var movie = new Movie();
@@ -104,55 +104,55 @@ router.route('/movies')
                 res.status(200).send({success: true, msg: 'Successfully created new movie.'});
             });
         }
+    })
+    .put(authJwtController.isAuthenticated, function(req, res) {
+        if (!req.body.update_title || !req.body.update_data) {
+            return res.json({success: false, message: "Please provide a title to be updated as well as the new data to update that title."});
+        } else {
+            Movie.findOne({title:req.body.update_title}, function(err, res) {
+                if (err) {
+                    return res.json(err);
+                } else {
+                    Movie.updateOne({title: req.body.update_title}, update_data, function(err, res) {
+                        if (err) {
+                            return res.json(err);
+                        }
+                        return res.json({success: true, message: "Successfully updated movie."});
+                    })
+                }
+            })
+        }
+    })
+    .delete(authJwtController.isAuthenticated, function(req, res) {
+        if(!req.body) {
+            return res.json({success: false, message: "Please provide a movie to delete."});
+        } else {
+            Movie.findOne(req.body, function(err, res) {
+                if (err) {
+                    return res.json(err);
+                } else {
+                    Movie.deleteOne(req.body, function(err, res) {
+                        if (err) {
+                            return res.json(err);
+                        }
+                        res.json({success: true, msg: 'Successfully deleted movie.'});
+                    })
+                }
+            })
+        }
+    })
+    .get(authJwtController.isAuthenticated, function(req, res) {
+        if(!req.body) {
+            return res.json({success: false, message: "Please provide a movie to be retrieved."});
+        } else {
+            Movie.findOne(req.body).select("title year_released genre actors").exec(function(err, movie) {
+                if (err) {
+                    return res.json(err);
+                }
+                return res.json({success: true, message: "Successfully found movie.", movie: json(movie)});
+            })
+        }
     });
-    // .put(authJwtController.isAuthenticated, function(req, res) {
-    //     if (!req.body.update_title || !req.body.update_data) {
-    //         return res.json({success: false, message: "Please provide a title to be updated as well as the new data to update that title."});
-    //     } else {
-    //         Movie.findOne({title:req.body.update_title}, function(err, res) {
-    //             if (err) {
-    //                 return res.json(err);
-    //             } else {
-    //                 Movie.updateOne({title: req.body.update_title}, update_data, function(err, res) {
-    //                     if (err) {
-    //                         return res.json(err);
-    //                     }
-    //                     return res.json({success: true, message: "Successfully updated movie."});
-    //                 })
-    //             }
-    //         })
-    //     }
-    // })
-    // .delete(authJwtController.isAuthenticated, function(req, res) {
-    //     if(!req.body) {
-    //         return res.json({success: false, message: "Please provide a movie to delete."});
-    //     } else {
-    //         Movie.findOne(req.body, function(err, res) {
-    //             if (err) {
-    //                 return res.json(err);
-    //             } else {
-    //                 Movie.deleteOne(req.body, function(err, res) {
-    //                     if (err) {
-    //                         return res.json(err);
-    //                     }
-    //                     res.json({success: true, msg: 'Successfully deleted movie.'});
-    //                 })
-    //             }
-    //         })
-    //     }
-    // })
-    // .get(authJwtController.isAuthenticated, function(req, res) {
-    //     if(!req.body) {
-    //         return res.json({success: false, message: "Please provide a movie to be retrieved."});
-    //     } else {
-    //         Movie.findOne(req.body).select("title year_released genre actors").exec(function(err, movie) {
-    //             if (err) {
-    //                 return res.json(err);
-    //             }
-    //             return res.json({success: true, message: "Successfully found movie.", movie: json(movie)});
-    //         })
-    //     }
-    // })
 
 router.all('/', function (req, res) {
     res.json({success: false, msg: 'This route is not supported.'});
