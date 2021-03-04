@@ -115,7 +115,7 @@ router.route('/movies')
             Movie.findOneAndUpdate( req.body.find_title, req.body.update_title, function (err, movie) {
                 if (err) {
                     return res.status(403).json({success: false, message: "Unable to update title passed in."});
-                } else if (movie.n === 0) {
+                } else if (movie.length === 0) {
                     return res.status(403).json({success: false, message: "Unable to find title to update."});
                 } else {
                     return res.status(200).json({success: true, message: "Successfully updated title."});
