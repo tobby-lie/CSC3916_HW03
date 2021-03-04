@@ -18,7 +18,7 @@ var MovieSchema = new Schema({
     title: { type: String, required: true },
     year_released: { type: String, required: true},
     genre: { type: String, required: true},
-    actors: [{actor_name: {type: String, required: true}}, {character_name: {type: String, required: true}}],
+    actors: [{actor_name: {type: String, required: true}}, {character_name: {type: String, required: true}}]
 
     // username: { type: String, required: true, index: { unique: true }},
     // password: { type: String, required: true, select: false }
@@ -26,6 +26,7 @@ var MovieSchema = new Schema({
 
 MovieSchema.pre('save', function(next) {
     var movie = this;
+    next();
 });
 
 // UserSchema.pre('save', function(next) {
