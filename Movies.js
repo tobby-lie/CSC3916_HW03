@@ -15,43 +15,25 @@ mongoose.set('useCreateIndex', true);
 
 //movie schema
 var MovieSchema = new Schema({
-    title: { type: String, required: true },
+    title: { type: String, required: true, unique: true },
     year_released: { type: String, required: true},
-    genre: { type: String, required: true},
-    actors: [ActorSchema]
-
-    // username: { type: String, required: true, index: { unique: true }},
-    // password: { type: String, required: true, select: false }
+    genre:
+        {
+        type: String,
+        required: true,
+        enum: ["Action", "Adventure", "Comedy", "Drama", "Fantasy", "Horror", "Mystery", "Thriller", "Western"]
+        },
+    actors:
+        [
+            { actor_name: { type: String, required: true}, character_name: { type: String, required: true}},
+            { actor_name: { type: String, required: true}, character_name: { type: String, required: true}},
+            { actor_name: { type: String, required: true}, character_name: { type: String, required: true}}
+        ]
 });
 
-var ActorSchema = new Schema( {
-    actor_name: String,
-    character_name: String
-})
-
-
-// UserSchema.pre('save', function(next) {
-//     var user = this;
-//
-//     //hash the password
-//     if (!user.isModified('password')) return next();
-//
-//     bcrypt.hash(user.password, null, null, function(err, hash) {
-//         if (err) return next(err);
-//
-//         //change the password
-//         user.password = hash;
-//         next();
-//     });
-// });
-//
-// UserSchema.methods.comparePassword = function (password, callback) {
-//     var user = this;
-//
-//     bcrypt.compare(password, user.password, function(err, isMatch) {
-//         callback(isMatch);
-//     })
-// }
+MovieSchema.pre('save', function(next) {
+    next();
+});
 
 //return the model to server
 module.exports = mongoose.model('Movies', MovieSchema);

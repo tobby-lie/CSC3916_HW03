@@ -46,7 +46,7 @@ router.post('/signup', function(req, res) {
 
         user.save(function(err){
             if (err) {
-                if (err.code == 11000)
+                if (err.code === 11000)
                     return res.json({success: false, message: 'A user with that username already exists'});
                 else
                     return res.json(err);
@@ -80,28 +80,77 @@ router.post('/signin', function (req, res) {
     })
 });
 
-router.post('/movies', function (req, res) {
-    if (!req.body.title || !req.body.year || !req.body.genre || !req.body.actors) {
-        res.json({success: false, msg: 'Please include a title, year released, genre, and three actors that were in the film.'});
-    } else {
-        var movie = new Movie();
-        movie.title = req.body.title;
-        movie.year = req.body.year;
-        movie.genre = req.body.genre;
-        if (req.body.actors.length !== 3) {
-            res.json({success: false, msg: 'Please include three actors that were in the film.'});
+router.route('/movies')
+    .post(authJwtController.isAuthenticated, function(req, res) {
+        if(!req.body.title || !req.body.year_released || !req.body.genre || !req.body.actors[0] || !req.body.actors[1] || !req.body.actors[2]) {
+            res.json({success: false, msg: 'Please include all information for title, year released, genre, and actors.'})
+        } else {
+            var movie = new Movie();
+
+            movie.title = req.body.title;
+            movie.year_released = req.body.year_released;
+            movie.genre = req.body.genre;
+            movie.actors = req.body.actors;
+
+            movie.save(function(err) {
+                if (err) {
+                    if (err.code === 11000)
+                        return res.json({success: false, message: "A movie with that title already exists."});
+                    else
+                        return res.json(err);
+                }
+                res.json({success: true, msg: 'Successfully created new movie.'});
+            });
         }
-        movie.actors = req.body.actors;
-
-        movie.save(function(err){
-            if (err) {
+    })
+    .put(authJwtController.isAuthenticated, function(req, res) {
+        if (!req.body.update_title || !req.body.update_data) {
+            return res.json({success: false, message: "Please provide a title to be updated as well as the new data to update that title."});
+        } else {
+            Movie.findOne({title:req.body.update_title}, function(err, res) {
+                if (err) {
                     return res.json(err);
-            }
-
-            res.json({success: true, msg: 'Successfully created new movie.'});
-        });
-    }
-})
+                } else {
+                    Movie.updateOne({title: req.body.update_title}, update_data, function(err, res) {
+                        if (err) {
+                            return res.json(err);
+                        }
+                        return res.json({success: true, message: "Successfully updated movie."});
+                    })
+                }
+            })
+        }
+    })
+    .delete(authJwtController.isAuthenticated, function(req, res) {
+        if(!req.body) {
+            return res.json({success: false, message: "Please provide a movie to delete."});
+        } else {
+            Movie.findOne(req.body, function(err, res) {
+                if (err) {
+                    return res.json(err);
+                } else {
+                    Movie.deleteOne(req.body, function(err, res) {
+                        if (err) {
+                            return res.json(err);
+                        }
+                        res.json({success: true, msg: 'Successfully deleted movie.'});
+                    })
+                }
+            })
+        }
+    })
+    .get(authJwtController.isAuthenticated, function(req, res) {
+        if(!req.body) {
+            return res.json({success: false, message: "Please provide a movie to be retrieved."});
+        } else {
+            Movie.findOne(req.body).select("title year_released genre actors").exec(function(err, movie) {
+                if (err) {
+                    return res.json(err);
+                }
+                return res.json({success: true, message: "Successfully found movie.", movie: json(movie)});
+            })
+        }
+    })
 
 app.use('/', router);
 app.listen(process.env.PORT || 8080);
