@@ -112,7 +112,7 @@ router.route('/movies')
         if (!req.body.title || !req.body.update_data) {
             return res.json({ success: false, message: "Please provide a movie to be updated as well as the new data to update that movie." });
         } else {
-            Movie.findOneAndUpdate( req.body.title, req.body.update_data, function (err, movie) {
+            Movie.updateOne( {title: req.body.title}, req.body.update_data, function (err, movie) {
                 if (err) {
                     return res.status(403).json({success: false, message: "Unable to update movie passed in."});
                 } else if (movie.n === 0) {
