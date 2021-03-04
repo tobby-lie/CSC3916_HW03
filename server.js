@@ -115,6 +115,8 @@ router.route('/movies')
             Movie.updateOne( req.body.find_title, req.body.update_title, function (err, movie) {
                 if (err) {
                     return res.status(403).json({success: false, message: "Unable to update title passed in."});
+                } else if (movie.n === 0) {
+                    return res.status(403).json({success: false, message: "Unable to find title to update."});
                 } else {
                     return res.status(200).json({success: true, message: "Successfully updated title."});
                 }
@@ -128,6 +130,8 @@ router.route('/movies')
             Movie.deleteOne( req.body.find_title, function (err, movie) {
                 if (err) {
                     return res.status(403).json({success: false, message: "Unable to delete title passed in."});
+                } else if (movie.n === 0) {
+                    return res.status(403).json({success: false, message: "Unable to find title to delete."});
                 }
                 else {
                     return res.status(200).json({success: true, message: "Successfully deleted title."});
