@@ -130,7 +130,7 @@ router.route('/movies')
             Movie.deleteOne( req.body.find_title, function (err, movie) {
                 if (err) {
                     return res.status(403).json({success: false, message: "Unable to delete title passed in."});
-                } else if (movie.n === 0) {
+                } else if (!movie) {
                     return res.status(403).json({success: false, message: "Unable to find title to delete."});
                 }
                 else {
