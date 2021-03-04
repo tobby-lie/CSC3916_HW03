@@ -117,6 +117,8 @@ router.route('/movies')
             Movie.findOneAndUpdate( query, req.body.update_data, function (err, movie) {
                 if (err) {
                     return res.status(403).json({success: false, message: "Unable to update movie passed in."});
+                } else if (movie.n === 0) {
+                    return res.status(403).json({success: false, message: "Unable to find this movie to update."});
                 } else {
                     return res.status(200).json({success: true, message: "Successfully updated movie."});
                 }
