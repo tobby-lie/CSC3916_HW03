@@ -103,54 +103,54 @@ router.route('/movies')
             });
         }
     })
-    .put(authJwtController.isAuthenticated, function(req, res) {
-        if (!req.body.update_title || !req.body.update_data) {
-            return res.json({success: false, message: "Please provide a title to be updated as well as the new data to update that title."});
-        } else {
-            Movie.findOne({title:req.body.update_title}, function(err, res) {
-                if (err) {
-                    return res.json(err);
-                } else {
-                    Movie.updateOne({title: req.body.update_title}, update_data, function(err, res) {
-                        if (err) {
-                            return res.json(err);
-                        }
-                        return res.json({success: true, message: "Successfully updated movie."});
-                    })
-                }
-            })
-        }
-    })
-    .delete(authJwtController.isAuthenticated, function(req, res) {
-        if(!req.body) {
-            return res.json({success: false, message: "Please provide a movie to delete."});
-        } else {
-            Movie.findOne(req.body, function(err, res) {
-                if (err) {
-                    return res.json(err);
-                } else {
-                    Movie.deleteOne(req.body, function(err, res) {
-                        if (err) {
-                            return res.json(err);
-                        }
-                        res.json({success: true, msg: 'Successfully deleted movie.'});
-                    })
-                }
-            })
-        }
-    })
-    .get(authJwtController.isAuthenticated, function(req, res) {
-        if(!req.body) {
-            return res.json({success: false, message: "Please provide a movie to be retrieved."});
-        } else {
-            Movie.findOne(req.body).select("title year_released genre actors").exec(function(err, movie) {
-                if (err) {
-                    return res.json(err);
-                }
-                return res.json({success: true, message: "Successfully found movie.", movie: json(movie)});
-            })
-        }
-    })
+    // .put(authJwtController.isAuthenticated, function(req, res) {
+    //     if (!req.body.update_title || !req.body.update_data) {
+    //         return res.json({success: false, message: "Please provide a title to be updated as well as the new data to update that title."});
+    //     } else {
+    //         Movie.findOne({title:req.body.update_title}, function(err, res) {
+    //             if (err) {
+    //                 return res.json(err);
+    //             } else {
+    //                 Movie.updateOne({title: req.body.update_title}, update_data, function(err, res) {
+    //                     if (err) {
+    //                         return res.json(err);
+    //                     }
+    //                     return res.json({success: true, message: "Successfully updated movie."});
+    //                 })
+    //             }
+    //         })
+    //     }
+    // })
+    // .delete(authJwtController.isAuthenticated, function(req, res) {
+    //     if(!req.body) {
+    //         return res.json({success: false, message: "Please provide a movie to delete."});
+    //     } else {
+    //         Movie.findOne(req.body, function(err, res) {
+    //             if (err) {
+    //                 return res.json(err);
+    //             } else {
+    //                 Movie.deleteOne(req.body, function(err, res) {
+    //                     if (err) {
+    //                         return res.json(err);
+    //                     }
+    //                     res.json({success: true, msg: 'Successfully deleted movie.'});
+    //                 })
+    //             }
+    //         })
+    //     }
+    // })
+    // .get(authJwtController.isAuthenticated, function(req, res) {
+    //     if(!req.body) {
+    //         return res.json({success: false, message: "Please provide a movie to be retrieved."});
+    //     } else {
+    //         Movie.findOne(req.body).select("title year_released genre actors").exec(function(err, movie) {
+    //             if (err) {
+    //                 return res.json(err);
+    //             }
+    //             return res.json({success: true, message: "Successfully found movie.", movie: json(movie)});
+    //         })
+    //     }
+    // })
 
 app.use('/', router);
 app.listen(process.env.PORT || 8080);
