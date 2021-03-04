@@ -112,14 +112,14 @@ router.route('/movies')
         if (!req.body.find_movie || !req.body.update_data) {
             return res.json({ success: false, message: "Please provide a movie to be updated as well as the new data to update that movie." });
         } else {
-            Movie.findOne( req.body.find_movie, function (err, result) {
+            Movie.findOne( {title: req.body.find_movie.title}, function (err, result) {
                 if (err) {
                     return res.send(err);
                 } else {
                     if (result == null) {
                         res.send("No movie matches the one that was passed in.");
                     } else {
-                        Movie.updateOne( req.body.find_movie, req.body.update_data, function (err, doc) {
+                        Movie.updateOne( {title: req.body.find_movie.title}, req.body.update_data, function (err, doc) {
                             if (err) {
                                 res.send(err);
                             }
