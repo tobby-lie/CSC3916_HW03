@@ -94,12 +94,14 @@ router.route('/movies')
 
             movie.save(function(err) {
                 if (err) {
-                    if (err.code === 11000)
+                    if (err.code === 11000) {
                         return res.json({success: false, message: "That movie already exists."});
-                    else
-                        return res.json(err);
+
+                    } else {
+                        return res.send(err);
+                    }
                 }
-                res.json({success: true, msg: 'Successfully created new movie.'});
+                res.status(200).send({success: true, msg: 'Successfully created new movie.'});
             });
         }
     });
@@ -158,6 +160,6 @@ router.all('/', function (req, res) {
 
 app.use('/', router);
 app.listen(process.env.PORT || 8080);
-module.exports = app; // for testing only
+// module.exports = app; // for testing only
 
 
