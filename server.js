@@ -112,7 +112,7 @@ router.route('/movies')
         if (!req.body.find_title || !req.body.update_title) {
             return res.json({ success: false, message: "Please provide a title to be updated as well as the new title to update." });
         } else {
-            Movie.updateOne( req.body.find_title, req.body.update_title, function (err, movie) {
+            Movie.findOneAndUpdate( req.body.find_title, req.body.update_title, function (err, movie) {
                 if (err) {
                     return res.status(403).json({success: false, message: "Unable to update title passed in."});
                 } else if (movie.n === 0) {
@@ -143,7 +143,7 @@ router.route('/movies')
         if (!req.body.find_title) {
             return res.json({ success: false, message: "Please provide a title to be retrieved." });
         } else {
-            Movie.findOne(req.body.find_title).select("title year_released genre actors").exec(function (err, movie) {
+            Movie.findOne( {title: req.body.find_title}).select("title year_released genre actors").exec(function (err, movie) {
                 if (err) {
                     return res.status(403).json({success: false, message: "Unable to retrieve title passed in."});
                 }
