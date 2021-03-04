@@ -25,10 +25,10 @@ var MovieSchema = new Schema({
             { actor_name: { type: String, required: true}, character_name: { type: String, required: true}}
         ]
 });
-//
-// MovieSchema.pre('save', function(next) {
-//     next();
-// });
+
+MovieSchema.pre('save', function(next) {
+    next();
+});
 
 //return the model to server
 module.exports = mongoose.model('Movies', MovieSchema);
