@@ -100,10 +100,10 @@ router.route('/movies')
                     if (err.code === 11000) {
                         return res.json({ success: false, message: "That movie already exists."});
                     } else {
-                        return res.status(403).json({success: false, message: "Unable to create movie passed in."});
+                        return res.json(err);
                     }
                 } else {
-                    return res.status(200).json({success: true, message: "Successfully created movie."});
+                    res.json({success: true, message: "Successfully created movie."});
                 }
             });
         }
