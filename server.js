@@ -103,7 +103,7 @@ router.route('/movies')
                         return res.send(err);
                     }
                 } else {
-                    res.status(200).send({success: true, message: "Successfully created movie."});
+                    return res.status(200).send({success: true, message: "Successfully created movie."});
                 }
             });
         }
